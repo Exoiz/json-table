@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>JSON Table</title>
+<script>
+function JSONtable(j,r){
+    var v = [];
+    var k = [];
+    var iv = [];
+    var ik = [];
+    var iiv = [];
+    var iik = [];
+    var t = '';
+    var f = 0;
+    for (k in j) {
+        if (k==r){
+            t = '<table name="'+k+'">';
+			t = t+'<tr>';
+			for (i of Object.keys(j[k][0])) {
+				t = t+'<th>'+i+'</th>';
+			}
+			t = t+'</tr>';
+            v = j[k];
+            for (ik in j[k]) {
+                t = t+'<tr>';
+                for (iik in j[k][ik]) {
+					t = t+'<td>'+j[k][ik][iik]+'</td>';
+                }
+                f++;
+                t = t+'</tr>';
+            }
+            t = t+'</table>';
+        }
+    }
+    return t;
+}
+function tableJSON(t,r){
+	var j = {};
+	var h = [];
+	var tr = t.split('<tr>');
+	var n = tr[0].split('name="')[1];
+	var n2 = n.split('">')[0];
+	j[r] = {};
+	if (n2==r){
+		for (var x=1; x<tr.length; x++) {
+			if (x==1){
+				th = tr[x].split('<th>');
+				for (var y=1; y<th.length; y++) {
+					h[y-1] = th[y].split('</th>')[0];
+				}
+			}else{
+				j[r][x-2] = {};
+				td = tr[x].split('<td>');
+				for (var y=1; y<td.length; y++) {
+					j[r][x-2][h[y-1]] = td[y].split('</td>')[0];
+				}
+			}
+		}
+    }	
+	return j;
+}
+function print_r(theObj){ 
+	if (theObj.constructor == Array || theObj.constructor == Object){ 
+		document.write("<ul>") 
+		for (var p in theObj){ 
+			if (theObj[p].constructor == Array || theObj[p].constructor == Object){ 
+				document.write("<li>["+p+"] => "+typeof(theObj)+"</li>"); 
+				document.write("<ul>") 
+                print_r(theObj[p]); 
+                document.write("</ul>") 
+             }else{ 
+                document.write("<li>["+p+"] => "+theObj[p]+"</li>"); 
+             } 
+          } 
+          document.write("</ul>") 
+       } 
+    } 
+</script>
+</head>
+<body>
+<script>
+var j = {"employees":[{"firstName":"John", "lastName":"Doe", "link":"<a href=\"#\">Link</a>"},{"firstName":"Anna", "lastName":"Smith", "link":"<a href=\"#\">Link</a>"},{"firstName":"Peter", "lastName":"Jones", "link":"<a href=\"#\">Link</a>"}]};
+print_r(j)
+var j2 = tableJSON(JSONtable(j,'employees'),'employees');
+document.write(JSONtable(j,'employees'));
+print_r(j2);
+</script>
+</body>
+</html>
